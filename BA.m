@@ -1,0 +1,116 @@
+function A = BA(position)
+ str = ["#000000",'#FF0000','#DEB887','#FDF5E6','#008000','#8B4513','#0000FF','#800080','#FFC0CB','#8B0000'];
+m_original=3;
+m_add=2;
+m_after_growth=50;
+pp=1;
+flag=zeros(1,50);
+max = 0;
+position1=[position;30;30;30];
+
+y=distance1(position1);
+for i=1:3
+    max = 0;
+    for j=1:50
+        a = y(j);
+        if a > max && flag(j) == 0
+            max = a;
+            b = j;
+        end
+    end
+    x(i)=position(3*b - 2);
+    position(3*b - 2) = position(3*i - 2);
+    y(i)=position(3*b - 1);
+    position(3*b - 1) = position(3*i - 1);
+    z(i)=position(3*b);
+    position(3*b) = position(3*i);
+    flag(b) = 1;
+end
+A=zeros(m_original);
+switch pp
+    case 1
+        A=zeros(m_original);
+    case 2
+        A=ones(m_original);
+    case 3
+        for i=1:m_original
+            for j=i+1:m_original
+                p=rand(1,1);
+                if p>0.8
+                    A(i,j)=1;
+                    A(j,i)=1;
+                end
+            end
+        end
+end
+ 
+for k=m_original+1:m_after_growth
+    M=k-1;    
+    p=zeros(1,M);
+    
+    x(k)=position(3*k - 2);
+    y(k)=position(3*k - 1);
+    z(k)=position(3*k);
+    for i=1:M
+        p(i)=(length(find(A(i,:)==1))+1)/(length(find(A==1))+M);
+    end
+    p
+    pp=cumsum(p);
+    pp
+    visit=zeros(1,M);
+    for i=1:m_add
+        random_data=rand(1,1);
+        random_data
+        aa=find(pp>=random_data); jj=aa(1);
+        
+        A(k,jj)=1;
+        A(jj,k)=1;
+        visit(jj)=1;
+        visit
+        degree=zeros(1,M);
+        total_degree=0;
+        for ii=1:M
+            if visit(ii)==1
+                p(ii)=0;
+                degree(ii)=0;
+            else
+                degree(ii)=length(A(i,:)==1)+1;
+            end
+            total_degree=total_degree+degree(ii);
+        end
+        for iii=1:M
+            p(iii)=degree(iii)/total_degree;
+        end
+        p
+        pp=cumsum(p);
+        pp
+    end
+end
+figure(2)
+% plot3(x(1),y(1),z(1),'ro','MarkerEdgeColor','g','MarkerFaceColor','#000000','MarkerSize',8);hold on;
+% plot3(x(2),y(2),z(2),'ro','MarkerEdgeColor','g','MarkerFaceColor','#FF0000','MarkerSize',8);hold on;
+% plot3(x(3),y(3),z(3),'ro','MarkerEdgeColor','g','MarkerFaceColor','#DEB887','MarkerSize',8);hold on;
+% plot3(x(4),y(4),z(4),'ro','MarkerEdgeColor','g','MarkerFaceColor','#FDF5E6','MarkerSize',8);hold on;
+% plot3(x(5),y(5),z(5),'ro','MarkerEdgeColor','g','MarkerFaceColor','#008000','MarkerSize',8);hold on;
+% plot3(x(6),y(6),z(6),'ro','MarkerEdgeColor','g','MarkerFaceColor','#8B4513','MarkerSize',8);hold on;
+% plot3(x(7),y(7),z(7),'ro','MarkerEdgeColor','g','MarkerFaceColor','#0000FF','MarkerSize',8);hold on;
+% plot3(x(8),y(8),z(8),'ro','MarkerEdgeColor','g','MarkerFaceColor','#800080','MarkerSize',8);hold on;
+% plot3(x(9),y(9),z(9),'ro','MarkerEdgeColor','g','MarkerFaceColor','#FFC0CB','MarkerSize',8);hold on;
+% plot3(x(10),y(10),z(10),'ro','MarkerEdgeColor','g','MarkerFaceColor','#8B0000','MarkerSize',8);hold on;
+for i= 1:50
+    plot3(x(i),y(i),z(i),'ro','MarkerEdgeColor','g','MarkerFaceColor',str(randi(10)),'MarkerSize',5);hold on;
+end
+hold on;
+for i=1:m_after_growth
+    for j=i+1:m_after_growth
+        if A(i,j)~=0
+            plot3([x(i),x(j)],[y(i),y(j)],[z(i),z(j)],'color','#8FBC8F','linewidth',1.2);
+        end
+    end
+end
+grid on;
+axis([0,30,0,30,0,30]) 
+hold off;
+    
+       
+                
